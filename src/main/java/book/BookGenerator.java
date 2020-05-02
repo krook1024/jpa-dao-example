@@ -18,7 +18,7 @@ public class BookGenerator {
         book.setFormat(faker.options().option(Book.Format.HARDBACK, Book.Format.PAPERBACK));
         book.setPublisher(faker.book().publisher());
         book.setPublicationDate(toLocalDate(faker.date().birthday()));
-        book.setPages((int) Math.abs(faker.number().randomNumber(3, false)));
+        book.setPages((int) Math.abs(faker.number().randomNumber(3, false) + 1));
         book.setAvailable(faker.bool().bool());
         return book;
     }
