@@ -5,7 +5,9 @@ import com.google.inject.Guice;
 import com.google.inject.Injector;
 import guice.PersistenceModule;
 
+import javax.swing.text.html.Option;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.IntStream;
 
 public class Main {
@@ -26,6 +28,9 @@ public class Main {
     }
 
     private static void generateRandomBooks(BookDao bookDao, int num) {
-        IntStream.range(0, num).mapToObj(i -> new BookGenerator().getRandomBook()).forEach(bookDao::persist);
+        IntStream.range(0, num)
+                .mapToObj(i -> new BookGenerator().getRandomBook())
+                .filter(randomBook -> bookDao.findByIsbn13(randomBook.getIsbn13()).isEmpty())
+                .forEach(bookDao::persist);
     }
 }
