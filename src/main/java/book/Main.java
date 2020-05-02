@@ -6,13 +6,14 @@ import com.google.inject.Injector;
 import guice.PersistenceModule;
 
 import java.util.List;
+import java.util.stream.IntStream;
 
 public class Main {
     public static void main(String[] args) {
         Injector injector = Guice.createInjector(new PersistenceModule("test"));
         BookDao bookDao = injector.getInstance(BookDao.class);
 
-        int num = (args.length == 0) ? 15 : Integer.parseInt(args[0]);
+        int num = (args.length == 0) ? 1000 : Integer.parseInt(args[0]);
 
         generateRandomBooks(bookDao, num);
 
@@ -21,17 +22,10 @@ public class Main {
 
     private static void printAllBooks(BookDao bookDao) {
         List<Book> list = bookDao.findAll();
-        if ( ! list.isEmpty()) {
-            for (Book book : list) {
-                System.out.println(book);
-            }
-        }
+        list.forEach(System.out::println);
     }
 
     private static void generateRandomBooks(BookDao bookDao, int num) {
-        for (int i = 0; i < num; i++) {
-            Book book = new BookGenerator().getRandomBook();
-            bookDao.persist(book);
-        }
+        IntStream.range(0, num).mapToObj(i -> new BookGenerator().getRandomBook()).forEach(bookDao::persist);
     }
 }
